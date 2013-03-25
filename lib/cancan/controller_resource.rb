@@ -216,10 +216,12 @@ module CanCan
     def resource_params
       if @options[:class]
         params_key = extract_key(@options[:class])
-        return @params[params_key] if @params[params_key]
+        @params[params_key] if @params[params_key]
+      elsif @options[:params]
+        @controller.send @options[:params] if @controller.send :respond_to?, @options[:params]
+      else
+        resource_params_by_namespaced_name
       end
-
-      resource_params_by_namespaced_name
     end
 
     def resource_params_by_namespaced_name
